@@ -4,7 +4,6 @@ MCLICK     = -2
 LCLICK     = -3
 SCROLLUP   = -4
 SCROLLDOWN = -5
-# LOCATION   = -6
 
 QUIT            = 12
 MOUSEBUTTONDOWN = 5
