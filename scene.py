@@ -1,7 +1,11 @@
 import pygame
+
 from system import get_screen_size, get_bounds
 from touch_event_engine import Tee
+
+
 # engine
+
 
 class Scene:
     def __init__(self, size=None, title="window"):
@@ -80,7 +84,7 @@ class Node:
         # attributes
         # self.bbox
         # self._alpha
-        self.frame
+        # self.frame #TODO add frame
         self.children = []
         # self.parent
         self.paused = False
@@ -92,16 +96,16 @@ class Node:
         self.rotation = 0
 
     @property
-    def bbox(self):
-        pass
+    def bbox(self):  # TODO add bbox getter
+        return None
 
     @property
     def alpha(self):
         return self._alpha
 
     @alpha.setter
-    def alpha_setter(self, value):
-        self._alpha = value
+    def alpha(self, alpha):
+        self._alpha = alpha
 
     def add_child(self, node):
         pass
@@ -128,9 +132,9 @@ class Node:
         pass
 
 
-class SpriteNode(Node):
+class SpriteNode(Node):  # TODO make better class
     def __init__(self):
-        pass
+        super().__init__() 
 
 
 class Sprite:
