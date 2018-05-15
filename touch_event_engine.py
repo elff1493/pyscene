@@ -1,3 +1,5 @@
+from geometry import Point
+
 
 RCLICK     = -1
 MCLICK     = -2
@@ -11,18 +13,6 @@ MOUSEBUTTONUP   = 6
 MOUSEMOTION     = 4
 KEYDOWN         = 2
 KEYUP           = 3
-
-class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __getitem__(self, item):
-        if item == 0:
-            return self.x
-        elif item == 1:
-            return self.y
-        raise Exception("out of bounds")
 
 
 class Touch(object):
