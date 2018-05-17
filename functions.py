@@ -1,3 +1,9 @@
+from nodes import SceneView
+
+PORTRAIT = 1  # todo add values
+LANDSCAPE = 1
+
+
 def run(scene_to_run, orientation=0, frame_interval=1, anti_alias=False, show_fps=False, multi_touch=True):
     sv = SceneView()
     if orientation == PORTRAIT:

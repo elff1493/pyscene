@@ -96,6 +96,9 @@ class Rect:
             return self.h
         raise Exception("out of bounds")
 
+    def __contains__(self, item):
+        return self.contains_point(item)
+
     @property
     def width(self):
         return self.x
@@ -185,7 +188,7 @@ class Rect:
         self.x += x
         self.y += y
 
-    def inset(self, top, left, bottom=None, right=None):  # TODO implement
+    def inset(self, top, left, bottom=None, right=None):  # TODO check its the same as pythonista
         if not bottom:
             bottom = top
         if not right:

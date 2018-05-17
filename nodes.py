@@ -1,12 +1,12 @@
 import pygame
 
+from other import Texture
 from system import get_screen_size, get_bounds
 from touch_event_engine import Tee
 
 
 class SceneView:
-    def __init__(self, size=None, title="window"):
-        pygame.init()
+    def __init__(self, size=None, name="window"):
 
         if size:
             self.size = size
@@ -14,30 +14,24 @@ class SceneView:
             self.size = get_screen_size()
 
         self.tee = Tee(self)
-        self.title = title
+        self.title = name
         self.running = True
         self.bg = (0, 0, 0)
         self.children = []
+        self.screen = None
+        self.bounds = get_bounds(pygame.display.get_wm_info()["window"])  # todo, is this 0,0,?
 
+    def present(self):
+        pygame.init()
         pygame.display.init()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.title)
-
         self.bounds = get_bounds(pygame.display.get_wm_info()["window"])
-        # all done, call setup
-        self.setup()
 
-    def add_child(self, kid):
-        self.children.append(kid)
-
-    def draw(self):
-        for i in self.children:
-            i.draw()
-
-    def present(self):
+    def _loop(self):
         while self.running:
-            self.screen.fill(self.bg)
             self.tee.loop(pygame.event.get())
+            self.screen.fill(self.bg)
             self.update()
             self.draw()
             pygame.display.flip()
@@ -46,26 +40,8 @@ class SceneView:
     def _quit(self):
         self.running = False
 
-    def quit(self):
-        pass
 
-    def setup(self):
-        pass
-
-    def update(self):
-        pass
-
-    def touch_began(self, touch):
-        pass
-
-    def touch_moved(self, touch):
-        pass
-
-    def touch_ended(self, touch):
-        pass
-
-
-class Scene:
+class Sceneold:  # an experiment scene class
     def __init__(self, size=None, title="window"):
         pygame.init()
 
@@ -141,7 +117,7 @@ class Node:
         # attributes
         # self.bbox
         # self._alpha
-        # self.frame # TODO add frame
+        # self.frame
         self.children = []
         # self.parent
         self.paused = False
@@ -199,6 +175,53 @@ class Node:
         pass
 
 
+class EffectNode(Node):
+    def __init__(self):
+        pass
+
+
 class SpriteNode(Node):  # TODO make better class
     def __init__(self):
         super().__init__()
+
+
+class Scene(EffectNode):
+    def __init__(self):
+        super().__init__()
+
+    def add_child(self, kid):  # TODO remove
+        self.children.append(kid)
+
+    def draw(self):
+        for i in self.children:
+            i.draw()
+
+    def present(self):
+        while self.running:
+            self.screen.fill(self.bg)
+            self.tee.loop(pygame.event.get())
+            self.update()
+            self.draw()
+            pygame.display.flip()
+        pygame.quit()
+
+    def _quit(self):
+        self.running = False
+
+    def quit(self):
+        pass
+
+    def setup(self):
+        pass
+
+    def update(self):
+        pass
+
+    def touch_began(self, touch):
+        pass
+
+    def touch_moved(self, touch):
+        pass
+
+    def touch_ended(self, touch):
+        pass
