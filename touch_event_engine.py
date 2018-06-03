@@ -34,12 +34,12 @@ class Touch(object):
 
 
 class Tee:
-    def __init__(self, owner):
-        self.downcall = owner.touch_began
-        self.movecall = owner.touch_moved
-        self.endcall  = owner.touch_ended
-        self.quitcall = owner._quit
-        self.owner = owner
+    def __init__(self, view):
+        self.downcall = view.scene.touch_began
+        self.movecall = view.scene.touch_moved
+        self.endcall = view.scene.touch_ended
+        self.quitcall = view._quit
+        self.owner = view
 
     def loop(self, events):
         for event in events:

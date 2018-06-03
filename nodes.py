@@ -13,93 +13,45 @@ class SceneView:
         else:
             self.size = get_screen_size()
 
-        self.tee = Tee(self)
         self.title = name
         self.running = True
         self.bg = (0, 0, 0)
-        self.children = []
+        # self.children = []
         self.screen = None
-        self.bounds = get_bounds(pygame.display.get_wm_info()["window"])  # todo, is this 0,0,?
+        self.bounds = (0, 0)  # get_bounds(pygame.display.get_wm_info()["window"])  # todo, is this 0,0,?
 
-    def present(self):
+        self.scene = None
+        self.anti_alias = None
+        self.frame_interval = None
+        self.multi_touch_enabled = None
+        self.shows_fps = None
+        self.scene = None
+
+        self.tee = None
+
+    def present(self, orientations=None):
         pygame.init()
         pygame.display.init()
         self.screen = pygame.display.set_mode(self.size)
         pygame.display.set_caption(self.title)
         self.bounds = get_bounds(pygame.display.get_wm_info()["window"])
+
+        # self.scene.view = self
+        self.tee = Tee(self)
+        self.scene.setup()
+        self._loop()
 
     def _loop(self):
         while self.running:
             self.tee.loop(pygame.event.get())
             self.screen.fill(self.bg)
-            self.update()
-            self.draw()
+            self.scene.update()
+            self.scene._update_children(self)
             pygame.display.flip()
         pygame.quit()
 
     def _quit(self):
         self.running = False
-
-
-class Sceneold:  # an experiment scene class
-    def __init__(self, size=None, title="window"):
-        pygame.init()
-
-        if size:
-            self.size = size
-        else:
-            self.size = get_screen_size()
-
-        self.tee = Tee(self)
-        self.title = title
-        self.running = True
-        self.bg = (0, 0, 0)
-        self.children = []
-
-        pygame.display.init()
-        self.screen = pygame.display.set_mode(self.size)
-        pygame.display.set_caption(self.title)
-
-        self.bounds = get_bounds(pygame.display.get_wm_info()["window"])
-        # all done, call setup
-        self.setup()
-
-    def add_child(self, kid):
-        self.children.append(kid)
-
-    def draw(self):
-        for i in self.children:
-            i.draw()
-
-    def present(self):
-        while self.running:
-            self.screen.fill(self.bg)
-            self.tee.loop(pygame.event.get())
-            self.update()
-            self.draw()
-            pygame.display.flip()
-        pygame.quit()
-
-    def _quit(self):
-        self.running = False
-
-    def quit(self):
-        pass
-
-    def setup(self):
-        pass
-
-    def update(self):
-        pass
-
-    def touch_began(self, touch):
-        pass
-
-    def touch_moved(self, touch):
-        pass
-
-    def touch_ended(self, touch):
-        pass
 
 
 class Node:
@@ -113,7 +65,9 @@ class Node:
         self.y_scale = y_scale
         self._alpha = alpha
         self.speed = speed
-        self.parent = parent
+        self.parent = None
+        if parent:
+            parent.add_child(self)
         # attributes
         # self.bbox
         # self._alpha
@@ -128,9 +82,9 @@ class Node:
         # self.z_position
         self.rotation = 0
 
-    def _update_children(self):
+    def _update_children(self, view):
         for kid in self.children:
-            kid.update()
+            kid._update_children(view)
 
     @property
     def frame(self):  # TODO add bbox getter
@@ -149,6 +103,7 @@ class Node:
         self._alpha = alpha
 
     def add_child(self, node):
+        node.parent = self
         self.children.append(node)
 
     def remove_from_parent(self):
@@ -177,12 +132,45 @@ class Node:
 
 class EffectNode(Node):
     def __init__(self):
-        pass
+        super().__init__()
 
 
 class SpriteNode(Node):  # TODO make better class
-    def __init__(self):
-        super().__init__()
+    def __init__(self, texture, position=(0, 0), z_position=0.0, scale=1.0,
+                 x_scale=1.0, y_scale=1.0, alpha=1.0, speed=1.0, parent=None,
+                 size=None, color='white', blend_mode=0
+                 ):
+        super().__init__(position=position, z_position=z_position, scale=scale,
+                         x_scale=x_scale, y_scale=y_scale, alpha=alpha, speed=speed, parent=parent)
+
+        self.color = color
+        if texture:
+            self.texture = texture
+        elif size:
+            texture = pygame.Surface(size)
+            texture.fill(self.color)
+            self.texture = Texture(texture)
+        else:
+            raise Exception("size not given")
+        # parent.add_child(self)
+
+        self.position = (0, 0)
+        self.rect = self.texture.image.get_rect()
+        self.rect.topleft = (0, 0)
+        self.anchor_point = (0.5, 0.5)
+        # self.parent = parent
+        # self.children = []
+        self.rotation = 0.0  # rads
+
+    def _update_children(self, view):
+        for kid in self.children:
+            kid._update_children(view)
+        pos = self.rect
+        pos.x = -pos.w * self.anchor_point[0]
+        pos.x += self.position[0]
+        pos.y = -pos.h * self.anchor_point[1]
+        pos.y += self.position[1]
+        view.screen.blit(self.texture.image, pos)
 
 
 class Scene(EffectNode):
@@ -191,19 +179,6 @@ class Scene(EffectNode):
 
     def add_child(self, kid):  # TODO remove
         self.children.append(kid)
-
-    def draw(self):
-        for i in self.children:
-            i.draw()
-
-    def present(self):
-        while self.running:
-            self.screen.fill(self.bg)
-            self.tee.loop(pygame.event.get())
-            self.update()
-            self.draw()
-            pygame.display.flip()
-        pygame.quit()
 
     def _quit(self):
         self.running = False

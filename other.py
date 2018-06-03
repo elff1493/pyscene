@@ -1,12 +1,12 @@
-from pygame import Surface
+from pygame import Surface, image
 
 
 class Texture:
-    def __init__(self, image):
-        if isinstance(image, Surface):
-            self.image = image
+    def __init__(self, im):
+        if isinstance(im, Surface):
+            self.image = im
         else:
-            self.image = image.load(image)
+            self.image = image.load(im)
 
     def subtexture(self, rect):
         return Texture(self.image.subsurface(rect))

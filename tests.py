@@ -1,3 +1,4 @@
+from functions import *
 from scene import *
 from touch_event_engine import RCLICK
 
@@ -5,7 +6,7 @@ from touch_event_engine import RCLICK
 class Test(Scene):
     def setup(self):
         # self.block = Block(self.screen, (2, 255, 230), 40, 40)
-        self.ell = Sprite(parent=self, colour=(200, 100, 0), size=(100, 100), texture=Texture("image.png"))
+        self.ell = SpriteNode(parent=self, color=(200, 100, 0), size=(100, 100), texture=Texture("image.png"))
 
     def update(self):
         pass
@@ -20,4 +21,4 @@ class Test(Scene):
             self.ell.position = touch.location
 
 
-Test()
+run(Test())
