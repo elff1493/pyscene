@@ -1,4 +1,10 @@
-from nodes import SceneView
+import ctypes
+
+from scene.nodes import SceneView
+
+user32 = ctypes.windll.user32
+user32.SetProcessDPIAware()
+
 
 PORTRAIT = 1  # todo add values
 LANDSCAPE = 1
@@ -23,10 +29,8 @@ def run(scene_to_run, orientation=0, frame_interval=1, anti_alias=False, show_fp
 def gravity():
     return 0, 0, 0
 
-
 def get_screen_size():
-    pass
-
+    return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 def get_screen_scale():
     return 1.0

@@ -1,5 +1,4 @@
-from geometry import Point
-
+from scene.other import Touch
 
 RCLICK     = -1
 MCLICK     = -2
@@ -13,25 +12,6 @@ MOUSEBUTTONUP   = 6
 MOUSEMOTION     = 4
 KEYDOWN         = 2
 KEYUP           = 3
-
-
-class Touch(object):
-    def __init__(self, x, y, prev_x, prev_y, touch_id):
-        self.touch_id = touch_id
-        self.location = Point(x, y)
-        self.prev_location = Point(prev_x, prev_y)
-        self.layer = None
-
-    def __eq__(self, other_touch):
-        if not isinstance(other_touch, Touch):
-            return False
-        elif other_touch.touch_id == self.touch_id:
-            return True
-        return False
-
-    def __hash__(self):
-        return self.touch_id.__hash__()
-
 
 class Tee:
     def __init__(self, view):
@@ -59,4 +39,5 @@ class Tee:
             elif event.type == KEYUP:
                 self.endcall(Touch(-1, -1, -1, -1, event.key))
 
-
+    def get_list(self):  # todo add list for points and link it to the scene
+        return

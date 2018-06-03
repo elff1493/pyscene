@@ -12,7 +12,10 @@ class Vector2:
             return self.x
         elif item == 1:
             return self.y
-        raise Exception("out of bounds")
+        elif item > 1:
+            raise IndexError
+        raise TypeError
+
 
     def __add__(self, other):
         return self.__class__(self.x + other[0], self.y + other[1])
@@ -35,6 +38,8 @@ class Vector2:
     def __abs__(self):
         return sqrt(self.x ** 2 + self.y ** 2)
 
+    def __len__(self):
+        return 2
 
 class Point(Vector2):
     def __init__(self, x, y):
@@ -94,7 +99,7 @@ class Rect:
             return self.w
         elif item == 3:
             return self.h
-        raise Exception("out of bounds")
+        raise IndexError
 
     def __contains__(self, item):
         return self.contains_point(item)
