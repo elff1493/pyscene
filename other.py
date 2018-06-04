@@ -9,11 +9,16 @@ class Texture:
             self.image = image.load(im)
         else:
             self.image = Surface((0, 0))
-
+        self.original = self.image
         self.filtering_mode = 0  # todo implement and add constants
         self.size = 0  # todo add geter
+
     def subtexture(self, rect):
-        return Texture(self.image.subsurface(rect))
+
+        rect2 = self.original.get_rect()
+
+        return Texture(self.original.subsurface(
+            ((rect[0]) * rect2[2], (1 - rect[1] - rect[3]) * rect2[3], rect[2] * rect2[2], rect[3] * rect2[3])))
 
 
 class Action:  # TODO make action class and implement it into nodes

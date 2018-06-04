@@ -20,19 +20,29 @@ class Tee:
         self.endcall = view.scene.touch_ended
         self.quitcall = view._quit
         self.owner = view
+        self.size = (0, 0)
 
     def loop(self, events):
+
         for event in events:
             if event.type == QUIT:
                 self.quitcall()
             elif event.type == MOUSEBUTTONDOWN:
-                self.downcall(Touch(event.pos[0], event.pos[1], event.pos[0], event.pos[1], -event.button))
+                pos = event.pos
+                pos = (pos[0], self.size[1] - pos[1])
+                self.downcall(Touch(pos[0], pos[1], pos[0], pos[1], -event.button))
             elif event.type == MOUSEMOTION:
                 for i in range(len(event.buttons)):
                     if event.buttons[i]:
-                        self.movecall(Touch(event.pos[0], event.pos[1], event.rel[0], event.rel[1], -i-1))
+                        pos = event.pos
+                        pos = (pos[0], self.size[1] - pos[1])
+                        rel = event.rel
+                        rel = (rel[0], self.size[1] - rel[1])
+                        self.movecall(Touch(pos[0], pos[1], rel[0], rel[1], -i - 1))
             elif event.type == MOUSEBUTTONUP:
-                self.endcall(Touch(event.pos[0], event.pos[1], event.pos[0], event.pos[1], -event.button))
+                pos = event.pos
+                pos = (pos[0], self.size[1] - pos[1])
+                self.endcall(Touch(pos[0], pos[1], pos[0], pos[1], -event.button))
             elif event.type == KEYDOWN:
                 print(event.key)
                 self.downcall(Touch(-1, -1, -1, -1, event.key))

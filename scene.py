@@ -1,7 +1,3 @@
-from nodes import *
-from other import *
-
-
 class Sprite:
     def __init__(self, parent=None, texture=None, size=None, colour=(0, 0, 0)):
         self.colour = colour

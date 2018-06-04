@@ -25,7 +25,6 @@ def run(scene_to_run, orientation=0, frame_interval=1, anti_alias=False, show_fp
     sv.scene = scene_to_run
     sv.present(orientations=ui_orientations)
 
-
 def gravity():
     return 0, 0, 0
 
