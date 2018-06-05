@@ -1,5 +1,5 @@
 import pygame
-from scene.geometry import Point, Rect
+from scene.geometry import Point, Rect, Size
 from scene.other import Texture
 from scene.system import get_screen_size, get_bounds
 from scene.touch_event_engine import Tee
@@ -35,7 +35,7 @@ class SceneView:
         if self.scene.size:
             self.size = self.scene.size
         else:
-            self.scene.size = Point(*self.size)
+            self.scene.size = Size(*self.size)
 
         pygame.init()
         pygame.display.init()
@@ -150,12 +150,13 @@ class Node:
             crop_rect = self.frame
         return Texture(pygame.Surface())
 
-    def point_to_scene(self, point):  # todo make recersive stuff
+    def point_to_scene(self, point):  # todo make rotation work
         point = self._position + point
         return point
 
     def point_from_scene(self, point):  # todo
-        pass
+        point = -self._position + point
+        return point
 
     def run_action(self, action, key=""):  # TODO add actions
         pass
@@ -177,9 +178,13 @@ class SpriteNode(Node):
         self.color = colours(color)
         self._size = 0
         if texture:
+            if isinstance(texture, str):
+                texture = Texture(texture)
             self.texture = texture
             if size:
                 self.size = size
+            else:
+                size = self.texture.image.get_size()
         else:
             if not size:
                 size = (1, 1)
@@ -210,7 +215,7 @@ class SpriteNode(Node):
         pos.y += self.position[1]
         pos.y = self._root.size.y - pos.y
         # view.screen.blit(self.texture.image, pos)
-        view.screen.blit(pygame.transform.smoothscale(self.texture.original, (self._size[0], self._size[0])), pos)
+        view.screen.blit(pygame.transform.smoothscale(self.texture.original, (self._size[0], self._size[1])), pos)
 
     @property
     def frame(self):
@@ -231,11 +236,10 @@ class SpriteNode(Node):
 
     @property
     def size(self):
-
-        return self._size  # todo add gget
+        return Size(*self._size)  # todo add gget
 
     @size.setter
-    def size(self, size):
+    def size(self, size):  # todo see if there is a better way to do this
 
         self.texture.image = pygame.transform.scale(self.texture.original, (size[0], size[1]))
 
@@ -249,7 +253,7 @@ class LabelNode(SpriteNode):
         super().__init__(*args, **kwargs)
         self.text = text
         self.font = font
-        self._pyfont = pygame.font.Font(None, 20)
+        self._pyfont = pygame.font.Font(None, font[1])
 
         self._render()
 
@@ -261,7 +265,7 @@ class Scene(EffectNode):
     def __init__(self, _size=None, color="gray", *args, **kwargs):
         super().__init__(*args, **kwargs)
         if _size:
-            self.size = Point(*_size)
+            self.size = Size(*_size)
         else:
             self.size = None
         self.color = colours(color)
@@ -289,6 +293,10 @@ class Scene(EffectNode):
     def touch_ended(self, touch):
         pass
 
+    @property
+    def bounds(self):
+
+        return Rect(0, 0, self.size[0], self.size[1])
 
 _colourdic = {'aliceblue': (240, 248, 255),
               'antiquewhite': (250, 235, 215),
@@ -439,7 +447,7 @@ _colourdic = {'aliceblue': (240, 248, 255),
               'yellowgreen': (154, 205, 50)}
 
 
-def colours(c):
+def colours(c):  # todo return 4 vaules
     """turns an imput in to a typle.
     eg ffffff > (255, 255, 255) or 'black' > (0, 0, 0)"""
     if isinstance(c, str):

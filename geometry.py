@@ -49,6 +49,8 @@ class Point(Vector2):
 class Size(Vector2):
     def __init__(self, w, h):
         super().__init__(w, h)
+        self.w = w
+        self.h = h
 
     @property
     def w(self):

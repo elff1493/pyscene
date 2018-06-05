@@ -1,14 +1,26 @@
-from pygame import Surface, image
+import os
+
+import PIL
+from pygame import Surface
+from pygame import image
 from scene.geometry import Point
+
+builtins = os.listdir("scene/Media")
+print(builtins)
 
 class Texture:
     def __init__(self, im=None):
         if isinstance(im, Surface):
             self.image = im
-        elif im:
+        elif isinstance(im, str):
+            for start in builtins:
+                if im.startswith(start + ":"):
+                    for file in os.listdir("scene/Media" + "/" + start):
+                        if file.startswith(im[len(start) + 1:]):
+                            im = "scene/Media/" + start + "/" + file
             self.image = image.load(im)
-        else:
-            self.image = Surface((0, 0))
+        elif isinstance(im, PIL.Image):
+            self.image = image.fromstring(image.tostring(), image.size, image.mode)
         self.original = self.image
         self.filtering_mode = 0  # todo implement and add constants
         self.size = 0  # todo add geter

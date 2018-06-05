@@ -29,7 +29,8 @@ def gravity():
     return 0, 0, 0
 
 def get_screen_size():
-    return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    return 768, 1024
+    # return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 def get_screen_scale():
     return 1.0

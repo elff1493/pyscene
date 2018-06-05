@@ -3,7 +3,8 @@ user32 = ctypes.windll.user32
 user32.SetProcessDPIAware()
 
 def get_screen_size():
-    return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    return 768, 1024
+    # return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 
 #===================================================================
