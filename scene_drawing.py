@@ -1,6 +1,10 @@
+# import pyopengl
+
+
+
 # global states
 # =====================================
-
+"""
 def blend_mode(mode):  # todo add
     pass
 
@@ -123,3 +127,4 @@ def render_text(txt, font_name='Helvetica', font_size=16.0):
 
 def unload_image(image_name):
     pass
+"""

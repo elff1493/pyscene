@@ -55,6 +55,7 @@ class SceneView:
         while self.running:
             self.tee.loop(pygame.event.get())
             self.screen.fill(self.scene.color)
+            self.scene.draw()
             self.scene.update()
             self.scene._update_children(self)
             pygame.display.flip()
@@ -245,7 +246,6 @@ class SpriteNode(Node):
 
         self._size = size
 
-
 pygame.font.init()
 
 class LabelNode(SpriteNode):
@@ -271,6 +271,9 @@ class Scene(EffectNode):
         self.color = colours(color)
         self.parent = self
         self._root = self
+
+    def draw(self):  # todo add opengl stuff
+        pass
 
     def _quit(self):
         self.running = False
